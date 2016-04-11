@@ -48,6 +48,9 @@ const selectors = [
 /** @const @type {!string} */
 const cssClass = "banned-by-cookie-banner";
 
+/** @const @type {!number} */
+const observerTimeoutSec = 5.0;
+
 /**
  * @return {!boolean}
  */
@@ -74,9 +77,10 @@ if(!blockBanner()) {
   const body = document.body;
 
   if(body) {
-    let timeout = -1;
+    /** @type {!number} */
+    let timeoutId = -1;
 
-    /** @type function(?Array<?MutationRecord>,?MutationObserver):? */
+    /** @type {!function(?Array<?MutationRecord>,?MutationObserver):?} */
     const callback = (mutations, observer) => {
       if(!mutations) return;
 
@@ -90,9 +94,8 @@ if(!blockBanner()) {
           continue;
         }
 
-
         if(blockBanner()) {
-          clearTimeout(timeout);
+          clearTimeout(timeoutId);
           observer.disconnect();
           return;
         }
@@ -100,13 +103,13 @@ if(!blockBanner()) {
     };
 
     const observer = new MutationObserver(callback);
-    const config = { attributes: false, childList: true, characterData: false };
+    const config = { childList: true, attributes: false, characterData: false };
 
     observer.observe(body, config);
 
-    timeout = setTimeout(() => {
-      timeout = -1;
+    timeoutId = setTimeout(() => {
+      timeoutId = -1;
       observer.disconnect();
-    }, 5000);
+    }, observerTimeoutSec * 1000);
   }
 }
