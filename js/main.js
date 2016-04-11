@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/** @const @type !Array<!string> */
+/** @const @type {!Array<!string>} */
 const selectors = [
   // ---------------------------- // ---------------------------
   // Selector                     // Website / Script
@@ -25,7 +25,7 @@ const selectors = [
   "#cookiebanner",                // Random guess
   ".cookiebanner",                // https://github.com/dobarkod/cookie-banner
   "#cookies-eu-banner",           // https://github.com/Alex-D/Cookies-EU-banner
-  "cc_banner-wrapper",            // https://silktide.com/tools/cookie-consent/
+  ".cc_banner-wrapper",           // https://silktide.com/tools/cookie-consent/
   "#cookie-bar",                  // http://www.primebox.co.uk/projects/jquery-cookiebar/
   ".cookie-bar",                  // Random guess
   "#cookiebar",                   // Random guess
@@ -45,19 +45,68 @@ const selectors = [
   // ---------------------------- // ---------------------------
 ];
 
-/** @const @type !string */
+/** @const @type {!string} */
 const cssClass = "banned-by-cookie-banner";
 
-for(let selector of selectors) {
-  /** @const @type ?Element */
-  const element = document.querySelector(selector);
+/**
+ * @return {!boolean}
+ */
+function blockBanner() {
+  for(let selector of selectors) {
+    /** @const @type {?Element} */
+    const element = document.querySelector(selector);
 
-  if(typeof Element !== "undefined" && element instanceof Element) {
-    /** @const @type ?string */
-    const klass = element.getAttribute("class");
+    if(typeof Element !== "undefined" && element instanceof Element) {
+      /** @const @type {?string} */
+      const klass = element.getAttribute("class");
 
-    element.setAttribute("class", (klass ? klass + " " : "") + cssClass);
+      element.setAttribute("class", (klass ? klass + " " : "") + cssClass);
 
-    break;
+      return true;
+    }
+  }
+
+  return false;
+}
+
+if(!blockBanner()) {
+  /** @const @type {?Element} */
+  const body = document.body;
+
+  if(body) {
+    let timeout = -1;
+
+    /** @type function(?Array<?MutationRecord>,?MutationObserver):? */
+    const callback = (mutations, observer) => {
+      if(!mutations) return;
+
+      for(let mutation of mutations) {
+        if(    !mutation
+            ||  mutation.type !== "childList"
+            || !mutation.target
+            ||  mutation.target !== body
+            || !mutation.addedNodes
+            ||  mutation.addedNodes.length < 1) {
+          continue;
+        }
+
+
+        if(blockBanner()) {
+          clearTimeout(timeout);
+          observer.disconnect();
+          return;
+        }
+      }
+    };
+
+    const observer = new MutationObserver(callback);
+    const config = { attributes: false, childList: true, characterData: false };
+
+    observer.observe(body, config);
+
+    timeout = setTimeout(() => {
+      timeout = -1;
+      observer.disconnect();
+    }, 5000);
   }
 }
