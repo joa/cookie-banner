@@ -34,6 +34,14 @@ const selectors = [
   "#cookielaw",                   // Random guess
   ".cookie-law",                  // Random guess
   ".cookielaw",                   // Random guess
+  ".cookies-dialog",              // Unity3D
+  "#cookies-dialog",              // Random guess
+  ".cookiesdialog",               // Random guess
+  "#cookiesdialog",               // Random guess
+  ".cookie-dialog",               // Random guess
+  "#cookie-dialog",               // Random guess
+  ".cookiedialog",                // Random guess
+  "#cookiedialog",                // Random guess
   // ---------------------------- // ---------------------------
 ];
 
