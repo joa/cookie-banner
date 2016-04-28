@@ -42,6 +42,8 @@ const selectors = [
   "#cookie-dialog",               // Random guess
   ".cookiedialog",                // Random guess
   "#cookiedialog",                // Random guess
+  "#cookie",                      // Random guess
+  ".cookie",                      // Random guess
   // ---------------------------- // ---------------------------
 ];
 
