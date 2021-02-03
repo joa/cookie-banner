@@ -20,6 +20,8 @@ const selectors = [
   // Selector                     // Website / Script
   // ---------------------------- // ---------------------------
   "#cookieChoiceInfo",            // BlogSpot
+  "#onetrust-consent-sdk",        // OneTrust Consent SDK
+  "#cf-root",                     // Cookiefirst
   "#cookie-banner",               // Random guess
   ".cookie-banner",               // Random guess
   "#cookiebanner",                // Random guess
